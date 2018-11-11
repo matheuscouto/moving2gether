@@ -15,3 +15,11 @@ export const updateUserPassword = async (newPassword:string):Promise<void> => {
 	const user = firebase.auth().currentUser
 	if(user) { await user.updatePassword(newPassword) }
 }
+
+export const pinIdea = async (link: string, category: string) => {
+	const newPinKey = firebase.database().ref().child('posts').push().key;
+	await firebase.database().ref(`/pins/${newPinKey}`).set({
+		link,
+		category,
+	});
+}

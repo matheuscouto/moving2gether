@@ -3,33 +3,30 @@ import { ActionsObservable, combineEpics, createEpicMiddleware, StateObservable 
 import { Observable } from 'rxjs';
 
 // REDUCERS AND EPICS EXPORTS
-import appStateReducer, {
-	epics as appStateEpics,
-	init,
-	IState as IAppStateState,
-} from './app/state';
+import appStateReducer, { epics as appStateEpics, init, IState as IAppStateState } from './app/state';
+import appPinReducer, { epics as appPinEpics, IState as IAppPinState } from './app/pin';
 
-import userAuthReducer, {
-	epics as userAuthEpics,
-	IState as IUserAuthState,
-} from './user/auth';
+import userAuthReducer, { epics as userAuthEpics, IState as IUserAuthState } from './user/auth';
 
 // STORE INTERFACE
 export interface IRootState {
 	appState: IAppStateState,
 	userAuth: IUserAuthState,
+	appPin: IAppPinState,
 }
 
 // COMBINED REDUCERS
 const rootReducer = combineReducers<IRootState>({
 	appState: appStateReducer,
-	userAuth: userAuthReducer
+	userAuth: userAuthReducer,
+	appPin: appPinReducer,
 });
 
 // COMBINED EPICS
 const rootEpic = combineEpics(
 	appStateEpics,
-	userAuthEpics
+	userAuthEpics,
+	appPinEpics,
 );
 
 
