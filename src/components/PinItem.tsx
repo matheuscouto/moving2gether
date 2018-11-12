@@ -3,8 +3,8 @@ import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LinkPreview from 'react-native-link-preview';
-import { times } from 'lodash';
 import Placeholder from 'rn-placeholder';
+import { times } from 'lodash';
 
 interface IMetaLinkData {
   images?: string[],

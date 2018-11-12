@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback, TextInput, Button } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, TextInput, Button, Animated, ViewStyle } from 'react-native';
 import { Dispatch } from 'redux';
 import { pinIdea } from '../../store/app/pin';
 import { connect } from 'react-redux';
@@ -14,13 +14,12 @@ interface IState {
 class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenProps, IState> {
   state: IState = {
     link: '',
-    rate: 2
+    rate: 2,
   }
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', padding: 20, backgroundColor: 'rgba(55, 55, 55, 0.5)' }}>
-      <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()} ><View style={{flex:1, width: '100%'}} /></TouchableWithoutFeedback>
+      <FadeInView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', padding: 20 }} navigation={this.props.navigation}>
         <View style={{ padding: 18, width: '100%',  backgroundColor: 'white', shadowColor: 'black', shadowRadius: 5, shadowOffset: { width: 5, height: 5 }, justifyContent:"center", borderRadius: 4, alignItems: 'center'}}>
           <Text>Cole o link aqui</Text>
           <TextInput style={{height: 40, borderRadius: 2, marginTop: 10, marginBottom: 10, width: '100%', borderColor: 'black', borderWidth: 1, borderStyle: 'solid'}} value={this.state.link} onChangeText={this.handleInputChange('link')} />
@@ -38,8 +37,7 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
           />
           <Button title="Enviar" onPress={this.handleCreateNewPin} />
         </View>
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()} ><View style={{flex:1, width: '100%'}} /></TouchableWithoutFeedback>
-     </View>
+     </FadeInView>
     );
   }
 
@@ -57,6 +55,54 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
   }
 
 
+}
+
+class FadeInView extends React.Component<{style: ViewStyle} & NavigationScreenProps> {
+  state = {
+    backgroundColor: new Animated.Value(0),
+  }
+
+  componentDidMount() {
+    Animated.sequence([
+        Animated.timing(this.state.backgroundColor, {
+            delay: 300,
+            duration: 400,
+            toValue: 1
+        }),
+    ]).start();
+  }
+
+  render() {
+    const backgroundColor = this.state.backgroundColor.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgba(55, 55, 55, 0)','rgba(55, 55, 55, 0.5)']
+    });
+    return (
+      <Animated.View
+        style={{
+          ...this.props.style,
+          backgroundColor,
+        }}
+      >
+
+      <TouchableWithoutFeedback onPress={this.willLeaveScreen} ><View style={{flex:1, width: '100%'}} /></TouchableWithoutFeedback>
+      {this.props.children}
+
+      <TouchableWithoutFeedback onPress={this.willLeaveScreen} ><View style={{flex:1, width: '100%'}} /></TouchableWithoutFeedback>
+      </Animated.View>
+    );
+  }
+
+  willLeaveScreen = () => {
+    Animated.sequence([
+        Animated.timing(this.state.backgroundColor, {
+            delay: 0,
+            duration: 1,
+            toValue: 0
+        }),
+    ]).start();
+    this.props.navigation.goBack()
+  }
 }
 
 /*****************************/
