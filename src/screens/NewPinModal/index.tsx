@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableWithoutFeedback, TextInput, Button } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { Dispatch } from 'redux';
 import { pinIdea } from '../../store/app/pin';
 import { connect } from 'react-redux';
 import { NavigationScreenProps } from 'react-navigation';
+import StarRating from 'react-native-star-rating';
 
 interface IState {
   link: string,
@@ -24,32 +24,23 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
         <View style={{ padding: 18, width: '100%',  backgroundColor: 'white', shadowColor: 'black', shadowRadius: 5, shadowOffset: { width: 5, height: 5 }, justifyContent:"center", borderRadius: 4, alignItems: 'center'}}>
           <Text>Cole o link aqui</Text>
           <TextInput style={{height: 40, borderRadius: 2, marginTop: 10, marginBottom: 10, width: '100%', borderColor: 'black', borderWidth: 1, borderStyle: 'solid'}} value={this.state.link} onChangeText={this.handleInputChange('link')} />
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <TouchableWithoutFeedback onPress={this.handleStarClick(1)} >
-              <Icon size={45} style={{marginRight: 5}}  color={'#F59D01'} name="ios-star" />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={this.handleStarClick(2)} >
-              <Icon size={45} style={{marginRight: 5}}  color={'#F59D01'} name={this.state.rate >= 2 ? 'ios-star' : 'ios-star-outline' } />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={this.handleStarClick(3)} >
-              <Icon size={45} style={{marginRight: 5}}  color={'#F59D01'} name={this.state.rate >= 3 ? 'ios-star' : 'ios-star-outline' } />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={this.handleStarClick(4)} >
-              <Icon size={45} style={{marginRight: 5}}  color={'#F59D01'} name={this.state.rate >= 4 ? 'ios-star' : 'ios-star-outline' } />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={this.handleStarClick(5)} >
-              <Icon size={45} color={'#F59D01'} name={this.state.rate >= 5 ? 'ios-star' : 'ios-star-outline' } />
-            </TouchableWithoutFeedback>
-          </View>
+          <StarRating
+            disabled={false}
+            emptyStar={'ios-star-outline'}
+            fullStar={'ios-star'}
+            halfStar={'ios-star-half'}
+            iconSet={'Ionicons'}
+            maxStars={5}
+            rating={this.state.rate}
+            selectedStar={(rating) => this.handleInputChange('rate')(rating)}
+            fullStarColor={'#F59D01'}
+            emptyStarColor="#F59D01"
+          />
           <Button title="Enviar" onPress={this.handleCreateNewPin} />
         </View>
         <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()} ><View style={{flex:1, width: '100%'}} /></TouchableWithoutFeedback>
      </View>
     );
-  }
-
-  handleStarClick = (rate: number) => () => {
-    this.handleInputChange('rate')(rate);
   }
 
   handleInputChange = (name: string) => (input: string | number) => {
