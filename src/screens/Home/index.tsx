@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 
 import { orderBy } from 'lodash';
-import FAB from 'react-native-fab';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
 import DatabaseObservable from '../../services/DatabaseObservable';
 
 import PinItem from '../../components/PinItem';
@@ -40,11 +39,19 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
             }
           }
         </DatabaseObservable>
-        <FAB buttonColor="red" iconTextColor="#FFFFFF" onClickAction={() => this.props.navigation.navigate('NewPinModal')} visible={true} iconTextComponent={<Icon name="plus"/>} />
+        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => this.props.navigation.navigate('NewPinModal')} />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white',
+  },
+});
 
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
