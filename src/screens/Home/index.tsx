@@ -1,61 +1,60 @@
 import React from 'react';
-import { View, Text, AlertIOS } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
+import { NavigationScreenProps } from 'react-navigation';
+
+import { orderBy } from 'lodash';
 import FAB from 'react-native-fab';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Dispatch } from 'redux';
-import { pinIdea } from '../../store/app/pin';
-import { connect } from 'react-redux';
 import DatabaseObservable from '../../services/DatabaseObservable';
-import { map } from 'lodash';
 
-class HomeScreen extends React.Component<IMapDispatchToProps> {
-  
-  render() {
+import PinItem from '../../components/PinItem';
+
+class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenProps, {title?: string}> {
+  public state: {title?: string} = {}
+
+  public render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-        <DatabaseObservable path="/pins">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <DatabaseObservable path="/pins" snapMap={(snap) => {
+													const pinList: any = [];
+													snap.forEach((rowSnap): any => {
+														pinList.push({
+															rate: rowSnap.child('rate').val(),
+                              link: rowSnap.child('link').val(),
+                              key: rowSnap.key
+														}); 
+                          });
+													return orderBy(pinList, ['rate'],['desc']);
+												}}>
           {
-            (loadingPins: boolean, error: any, pinCollection: {[pid: string]: {link: string, category: string}}) => {
+            (loadingPins: boolean, error: any, pinList: [{link: string, category: string, rate: number}]) => {
               if(loadingPins) return <Text>Loading pins...</Text>
+              console.log(' ORDERED LIST: ', pinList)
               return (
-                <View>
-                  {map(pinCollection, (pin, pid) => (
-                    <Text key={pid}>{pin.link}</Text>
+                <ScrollView style={{width: '100%'}}>
+                  { pinList.map((pin, pid) => (
+                    <PinItem link={pin.link} rate={pin.rate} key={pid} />
                   ))}
-                </View>
+                </ScrollView>
               )
             }
           }
         </DatabaseObservable>
-        <FAB buttonColor="red" iconTextColor="#FFFFFF" onClickAction={this.handleNewPinModal} visible={true} iconTextComponent={<Icon name="plus"/>} />
+        <FAB buttonColor="red" iconTextColor="#FFFFFF" onClickAction={() => this.props.navigation.navigate('NewPinModal')} visible={true} iconTextComponent={<Icon name="plus"/>} />
       </View>
     );
   }
-
-  private handleNewPinModal = () => {
-    AlertIOS.prompt(
-      'Cole o link aqui',
-      '',
-      this.handleCreateNewPin
-    );
-  }
-
-  private handleCreateNewPin = (link: string) => {
-    this.props.newPin(link)
-  }
 }
+
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
 /*****************************/
 //   MAP DISPATCH TO PROPS   //
-/****************************/
+/*****************************/
 
-interface IMapDispatchToProps {
-  newPin: (link: string) => void
-}
+interface IMapDispatchToProps {}
 
-const mapDispatchToProps = (dispatch: Dispatch): IMapDispatchToProps => ({
-  newPin: (link) => dispatch(pinIdea.started({link, category: '-'}))
-})
+const mapDispatchToProps = (dispatch: Dispatch): IMapDispatchToProps => ({})
 
 export default connect(null, mapDispatchToProps)(HomeScreen);
