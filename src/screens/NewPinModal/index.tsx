@@ -62,8 +62,8 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
                 : this.state.isValidatingLink
                   ? null
                   : <View style={{width: '100%', alignItems: 'center'}}>
-                      <Text style={{lineHeight: 20}}>Nao foi encontrado nenhum link valido :(</Text>
-                      <Text style={{lineHeight: 20}}>Copie um e volte aqui!</Text>
+                      <Text style={{lineHeight: 23, fontSize: 20, textAlign: 'center', marginBottom: 10}}>Nao foi encontrado nenhum link valido :(</Text>
+                      <Text style={{lineHeight: 20}}>Copie um e volte aqui ;)</Text>
                       <Button title="Fechar" color="rgba(231,76,60,1)" onPress={() => this.props.navigation.goBack()} />
                     </View>
                 }
