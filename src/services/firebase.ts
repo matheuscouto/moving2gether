@@ -17,6 +17,8 @@ export const updateUserPassword = async (newPassword:string):Promise<void> => {
 	if(user) { await user.updatePassword(newPassword) }
 }
 
+// SAVE PIN IDEA
+
 export const pinIdea = async (link: string, category: string, rate: number) => {
 	const newPinKey = firebase.database().ref().child('posts').push().key;
 	await firebase.database().ref(`/pins/${newPinKey}`).set({
@@ -25,4 +27,10 @@ export const pinIdea = async (link: string, category: string, rate: number) => {
 		timestamp: moment().unix(),
 		rate
 	});
+}
+
+// SAVE PIN IDEA
+
+export const unpinIdea = async (pid: string) => {
+	await firebase.database().ref(`/pins/${pid}`).remove();
 }
