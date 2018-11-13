@@ -2,11 +2,10 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import LinkPreview from 'react-native-link-preview';
+// import LinkPreview from 'react-native-link-preview';
 import Placeholder from 'rn-placeholder';
 import { times } from 'lodash';
 import axios from 'axios';
-import moment from 'moment';
 
 // interface IMetaLinkData {
 //   images?: string[],
@@ -28,7 +27,6 @@ class PinItem extends React.Component<{ link: string, rate?: number, isValidLink
   public componentDidMount() {
     axios.get("https://api.microlink.io/?url=" + this.props.link)
       .then((result: {data: { data: IMetaLinkData}}) => {
-            console.log(' META DATA: ', result.data.data);
         this.setState(state => ({ ...state, data: result.data.data, didLoad: true }));
         if(this.props.isValidLink) {
           this.props.isValidLink(true)

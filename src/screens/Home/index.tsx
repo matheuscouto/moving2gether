@@ -27,16 +27,15 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
                               key: rowSnap.key
 														}); 
                           });
-													return orderBy(pinList, ['rate'],['desc']);
+													return orderBy(pinList, ['rate'], ['desc']);
 												}}>
           {
-            (loadingPins: boolean, error: any, pinList: [{link: string, category: string, rate: number}]) => {
-              if(loadingPins) return <ActivityIndicator size="large" color="black" />
-              console.log(' ORDERED LIST: ', pinList)
+            (loadingPins: boolean, error: any, pinList: [{link: string, category: string, rate: number, key: string}]) => {
+              if(loadingPins) return <ActivityIndicator size="small" color="black" />
               return (
                 <ScrollView style={{width: '100%'}}>
-                  { pinList.map((pin, pid) => (
-                    <PinItem link={pin.link} rate={pin.rate} fullMargin={false} key={pid} />
+                  { pinList.map((pin) => (
+                    <PinItem link={pin.link} rate={pin.rate} fullMargin={false} key={pin.key} />
                   ))}
                 </ScrollView>
               )
