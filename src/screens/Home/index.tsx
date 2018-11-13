@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 
 import { orderBy } from 'lodash';
@@ -10,6 +10,10 @@ import PinItem from '../../components/PinItem';
 
 class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenProps, {title?: string}> {
   public state: {title?: string} = {}
+
+  static navigationOptions = {
+    title: 'Pinned places',
+  };
 
   public render() {
     return (
@@ -27,7 +31,7 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
 												}}>
           {
             (loadingPins: boolean, error: any, pinList: [{link: string, category: string, rate: number}]) => {
-              if(loadingPins) return <Text>Loading pins...</Text>
+              if(loadingPins) return <ActivityIndicator size="large" color="black" />
               console.log(' ORDERED LIST: ', pinList)
               return (
                 <ScrollView style={{width: '100%'}}>
