@@ -32,7 +32,7 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
               return (
                 <ScrollView style={{width: '100%'}}>
                   { pinList.map((pin, pid) => (
-                    <PinItem link={pin.link} rate={pin.rate} key={pid} />
+                    <PinItem link={pin.link} rate={pin.rate} fullMargin={false} />
                   ))}
                 </ScrollView>
               )
