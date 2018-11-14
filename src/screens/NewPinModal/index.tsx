@@ -38,7 +38,7 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
             this.state.isFetchingClipboard
             ? <ActivityIndicator size="small" color="black" />
             : <View style={{width: '100%', alignItems: 'center'}}>
-                <PinItem link={this.state.link} isValidLink={this.handleCheckLinkValidity} fullMargin rate={this.state.rate} />
+                <PinItem link={this.state.link} isValidLink={this.handleCheckLinkValidity} fullMargin rate={this.state.rate} button={false} />
                 {
                   this.state.isValidLink
                   ? <View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, Alert, TouchableWithoutFeedback } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 
 import { orderBy } from 'lodash';
@@ -7,17 +7,35 @@ import ActionButton from 'react-native-action-button';
 import DatabaseObservable from '../../services/DatabaseObservable';
 
 import PinItem from '../../components/PinItem';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenProps, {title?: string}> {
-  public state: {title?: string} = {}
+class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenProps, {title?: string, viewMode: 'list' | 'image'}> {
+  public state: {title?: string, viewMode: 'list' | 'image'} = {
+    viewMode: 'list'
+  }
 
   static navigationOptions = {
     title: 'Pinned places',
   };
 
+  private handleSwitchView = (viewName: 'list' | 'image') => () => {
+    this.setState(state => ({
+      ...state,
+      viewMode: viewName
+    }))
+  }
+
   public render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <View style={{paddingRight:50, paddingLeft: 50, paddingTop: 5,height: 50, width: '100%', borderBottomColor: '#E1E7ED', borderBottomWidth: 1, borderStyle: 'solid', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+          <TouchableWithoutFeedback onPress={this.handleSwitchView('list')}>
+            <Icon name="ios-list" color={this.state.viewMode==='list' ? '#3780FF' : '#B4C1D8'} size={27}  />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={this.handleSwitchView('image')}>
+            <Icon name="ios-image" color={this.state.viewMode==='image' ? '#3780FF' : '#B4C1D8'} size={27}  />
+          </TouchableWithoutFeedback>
+        </View>
         <DatabaseObservable path="/pins" snapMap={(snap) => {
 													const pinList: any = [];
 													snap.forEach((rowSnap): any => {
@@ -30,12 +48,22 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
 													return orderBy(pinList, ['rate'], ['desc']);
 												}}>
           {
-            (loadingPins: boolean, error: any, pinList: [{link: string, category: string, rate: number, key: string}]) => {
+            (loadingPins: boolean, error: any, pinList: [{link: string, category: string, rate: number, key: string, timestamp: number}]) => {
               if(loadingPins) return <ActivityIndicator size="small" color="black" />
               return (
                 <ScrollView style={{width: '100%'}}>
                   { pinList.map((pin) => (
-                    <PinItem link={pin.link} rate={pin.rate} fullMargin={false} key={pin.key} unpinIdea={this.handleUnpinIdea(pin.key)} editRating={this.handleEditRating(pin.key)} navigate={this.props.navigation.navigate} />
+                    <PinItem
+                      link={pin.link}
+                      rate={pin.rate}
+                      fullMargin={false}
+                      key={pin.key}
+                      unpinIdea={this.handleUnpinIdea(pin.key)}
+                      editRating={this.handleEditRating(pin.key)}
+                      navigate={this.props.navigation.navigate}
+                      viewMode={this.state.viewMode}
+                      creationTime={pin.timestamp}
+                    />
                   ))}
                 </ScrollView>
               )
