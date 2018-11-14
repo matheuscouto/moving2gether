@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 
 import { orderBy } from 'lodash';
@@ -47,7 +47,15 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
     );
   }
 
-  private handleUnpinIdea = (pid: string) => () => this.props.unpinIdea(pid);
+  private handleUnpinIdea = (pid: string) => () => Alert.alert(
+    'Atenção',
+    'Deseja realmente excluir?',
+    [
+      {text: 'Sim', onPress: () => this.props.unpinIdea(pid)},
+      {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+    ],
+    { cancelable: true }
+  )
 
   private handleEditRating = (pid: string) => (rate: number) => () => this.props.editRaring(pid, rate)
 }
