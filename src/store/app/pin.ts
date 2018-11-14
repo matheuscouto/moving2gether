@@ -4,13 +4,14 @@ import { reducerWithInitialState } from 'typescript-fsa-reducers/dist';
 import { Epic } from '..';
 import { filter, mapTo, mergeMap, catchError, tap } from 'rxjs/operators';
 import { from, of } from 'rxjs';
-import { pinIdea as apiPinIdea, unpinIdea as apiUnpinIdea } from '../../services/firebase';
+import { pinIdea as apiPinIdea, unpinIdea as apiUnpinIdea, editRating as apiEditRating } from '../../services/firebase';
 
 
 // ACTIONS
 const actionCreator = actionCreatorFactory('APP::PIN');
 export const pinIdea = actionCreator.async<{link: string, category: string, rate: number}, undefined, any>('NEW_PIN');
 export const unpinIdea = actionCreator.async<{pid: string}, undefined, any>('REMOVE_PIN');
+export const editRating = actionCreator.async<{pid: string, rate: number}, undefined, any>('EDIT RATING');
 
 // STATE
 export interface IState {};
@@ -39,7 +40,16 @@ const unpinIdeaEpic: Epic = (action$) => action$.pipe(
 	)),
 );
 
+const editRaringEpic: Epic = (action$) => action$.pipe(
+    filter(editRating.started.match),
+	mergeMap(({ payload: { pid, rate } }) => from(apiEditRating(pid, rate)).pipe(
+		mapTo(editRating.done({ params: { pid, rate } })),
+		catchError((error) => of(editRating.failed({ params: { pid, rate }, error: error.code  }))),
+	)),
+);
+
 export const epics = combineEpics(
 	pinIdeaEpic,
-	unpinIdeaEpic
+	unpinIdeaEpic,
+	editRaringEpic
 );

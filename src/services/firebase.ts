@@ -29,8 +29,14 @@ export const pinIdea = async (link: string, category: string, rate: number) => {
 	});
 }
 
-// SAVE PIN IDEA
+// UNPIN IDEA
 
 export const unpinIdea = async (pid: string) => {
 	await firebase.database().ref(`/pins/${pid}`).remove();
+}
+
+// EDIT RATING
+
+export const editRating = async (pid: string, rating: number) => {
+	await firebase.database().ref(`/pins/${pid}/rate`).set(rating);
 }

@@ -1,5 +1,5 @@
 import { createStackNavigator } from 'react-navigation';
-import { HomeScreen, NewPinModalScreen } from '../screens';
+import { HomeScreen, NewPinModalScreen, EditRatingModalScreen } from '../screens';
 
 const MainStack = createStackNavigator({
   Home: {
@@ -13,7 +13,8 @@ const MainStack = createStackNavigator({
 
 export default createStackNavigator({
     Main: MainStack,
-    NewPinModal: NewPinModalScreen
+    NewPinModal: NewPinModalScreen,
+    EditRatingModal: EditRatingModalScreen,
   },
   {
     mode: 'modal',

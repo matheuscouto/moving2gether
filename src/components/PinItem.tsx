@@ -19,15 +19,33 @@ interface IMetaLinkData {publisher: string, image: { url: string }, title: strin
 
 interface IState { didLoad: boolean, error: boolean, data?: IMetaLinkData}
 
-interface IProps { link: string, rate?: number, isValidLink?: (isValid: boolean) => void, fullMargin: boolean, button?:boolean, unpinIdea?: () => void }
+interface IProps {
+  link: string,
+  rate?: number,
+  isValidLink?: (isValid: boolean) => void,
+  fullMargin: boolean,
+  button?:boolean,
+  unpinIdea?: () => void,
+  editRating?: (rate: number) => () => void,
+  navigate?: any;
+}
 
-class PinItem extends React.Component<IProps, IState> {
+class PinItem extends React.Component<IProps , IState> {
   public state: IState = {
     didLoad: false,
     error: false
   }
 
+  private handleNavigate = (route: string, params?: any) => () => {
+    this.props.navigate(route, params)
+  }
+
   private swipeoutBtns = [
+    {
+      text: 'Editar nota',
+      backgroundColor: "#F59D01",
+      onPress: this.props.navigate ? this.handleNavigate('EditRatingModal', { editRating: this.props.editRating, rate: this.props.rate }) : () => null
+    },
     {
       text: 'Deletar',
       backgroundColor: "rgba(231,76,60,1)",
@@ -94,7 +112,7 @@ class PinItem extends React.Component<IProps, IState> {
                                       </View>
                                     </View>
     return (
-      <Swipeout right={this.swipeoutBtns} backgroundColor="white">
+      <Swipeout right={this.swipeoutBtns} backgroundColor="white" autoClose={true}>
         <TouchableOpacity style={{ flexDirection: 'row', width: '100%', ...border, borderStyle: 'solid' }} onPress={() => Linking.openURL(this.props.link)}>
           <Image style={{ width: this.props.fullMargin ? 100 : 150, height: this.props.fullMargin ? undefined : 100 }} source={{ uri: this.state.data!.image.url }} resizeMode="cover" />
           <View style={{ padding: 10, flex: 1 }}>

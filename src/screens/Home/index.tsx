@@ -35,7 +35,7 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
               return (
                 <ScrollView style={{width: '100%'}}>
                   { pinList.map((pin) => (
-                    <PinItem link={pin.link} rate={pin.rate} fullMargin={false} key={pin.key} unpinIdea={this.handleUnpinIdea(pin.key)} />
+                    <PinItem link={pin.link} rate={pin.rate} fullMargin={false} key={pin.key} unpinIdea={this.handleUnpinIdea(pin.key)} editRating={this.handleEditRating(pin.key)} navigate={this.props.navigation.navigate} />
                   ))}
                 </ScrollView>
               )
@@ -47,7 +47,9 @@ class HomeScreen extends React.Component<IMapDispatchToProps & NavigationScreenP
     );
   }
 
-  private handleUnpinIdea = (pid: string) => () => this.props.unpinIdea(pid)
+  private handleUnpinIdea = (pid: string) => () => this.props.unpinIdea(pid);
+
+  private handleEditRating = (pid: string) => (rate: number) => () => this.props.editRaring(pid, rate)
 }
 
 const styles = StyleSheet.create({
@@ -60,18 +62,20 @@ const styles = StyleSheet.create({
 
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { unpinIdea } from '../../store/app/pin';
+import { unpinIdea, editRating } from '../../store/app/pin';
 
 /*****************************/
 //   MAP DISPATCH TO PROPS   //
 /*****************************/
 
 interface IMapDispatchToProps {
-  unpinIdea: (pid: string) => void
+  unpinIdea: (pid: string) => void;
+  editRaring: (pid: string, rate: number) => void;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): IMapDispatchToProps => ({
-  unpinIdea: (pid) => dispatch(unpinIdea.started({pid}))
+  unpinIdea: (pid) => dispatch(unpinIdea.started({pid})),
+  editRaring: (pid, rate) => dispatch(editRating.started({pid, rate})),
 })
 
 export default connect(null, mapDispatchToProps)(HomeScreen);
